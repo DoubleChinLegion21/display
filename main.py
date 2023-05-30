@@ -3,6 +3,7 @@ import tkinter as tk
 from microdot_asyncio import Microdot, Response
 import asyncio
 import pyiface
+import pyautogui
 
 # creating window
 window = tk.Tk()
@@ -72,10 +73,15 @@ async def waitForWifi():
     timeText.set('Standby')
     await app.start_server(debug=True, port=5000)
 
+async def clickWake():
+    pyautogui.press('space')
+    await asyncio.sleep(60)
+
 async def main():
     waitForWifiTask = asyncio.create_task(waitForWifi())
     task1 = asyncio.create_task(update_loop())
-    await asyncio.gather(task1, waitForWifiTask)
+    clickWakeTask = asyncio.create_task(clickWake())
+    await asyncio.gather(task1, waitForWifiTask, clickWakeTask)
 
 # Call the function to get the local IP address
 if __name__ == "__main__":

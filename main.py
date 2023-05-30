@@ -3,9 +3,7 @@ import tkinter as tk
 import socket   
 from microdot_asyncio import Microdot, Response
 import asyncio
-
-hostname=socket.gethostname()   
-IPAddr=socket.gethostbyname(hostname)
+import pyiface
 
 # creating window
 window = tk.Tk()
@@ -16,11 +14,13 @@ window.title("Timer Board Results")
 
 #Set up variables using tk stringvar
 timeText = tk.StringVar()
-timeText.set('Standby')
+timeText.set('Connecting')
 
 # creating text label to display on window screen
-label = tk.Label(window, text=IPAddr)
-label.pack()
+ipText = tk.StringVar()
+ipText.set('...')
+ipLabel = tk.Label(window, textvariable=ipText)
+ipLabel.pack()
 
 screen_width = window.winfo_screenwidth()
 screen_height = window.winfo_screenheight()
@@ -66,6 +66,25 @@ async def main():
     task2 = asyncio.create_task(app.start_server(debug=True, port=5000))
     await asyncio.gather(task2, task1)
     
+def get_local_ip():
+    try:
+        # Create a temporary socket
+        temp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Connect the socket to a remote server (doesn't need to be reachable)
+        temp_socket.connect(("10.255.255.255", 1))
+        # Get the local IP address of the socket
+        local_ip = temp_socket.getsockname()[0]
+        # Close the temporary socket
+        temp_socket.close()
+        return local_ip
+    except socket.error:
+        return "Unable to determine IP address."
+
+# Call the function to get the local IP address
+local_ip_address = get_local_ip()
+print("Local IP address:", local_ip_address)
+timeText.set('Standby')
+ipText.set(local_ip_address)
 
 if __name__ == "__main__":
     asyncio.run(main())

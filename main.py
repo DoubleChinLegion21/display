@@ -81,7 +81,7 @@ def get_local_ip():
         return "Unable to determine IP address."
     
 # Get a specific interface by name
-wlan0 = pyiface.Interface(name='eth0')
+wlan0 = pyiface.Interface(name='wlan0').addr()
 
 # view eth0 info
 print(wlan0)

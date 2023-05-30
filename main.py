@@ -79,6 +79,12 @@ def get_local_ip():
         return local_ip
     except socket.error:
         return "Unable to determine IP address."
+    
+# Get a specific interface by name
+wlan0 = pyiface.Interface(name='eth0')
+
+# view eth0 info
+print(wlan0)
 
 # Call the function to get the local IP address
 local_ip_address = get_local_ip()

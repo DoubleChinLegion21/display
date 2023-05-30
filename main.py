@@ -70,6 +70,7 @@ async def updateHistoryDisplay():
 
         #check if historyObject is empty, if yes, wait, otherwise, we already waited at least once
         if len(historyObject) == 0:
+            historyTimeText.set('')
             await asyncio.sleep(4)
 
 def setHistoryTimes(request):
@@ -102,9 +103,9 @@ def formatTime(timeIn):
 #Handle request and sanitize for bad values sent
 @app.route('/', methods=['POST'])
 def index(request):
-    print(request.body.decode('utf-8'))
+    #print(request.body.decode('utf-8'))
     parsedRequest = json.loads(request.body.decode('utf-8'))
-    print(parsedRequest)
+    #print(parsedRequest)
     if "time" in parsedRequest:
         timeMs = parsedRequest['time']
         if timeMs != '':
@@ -156,6 +157,13 @@ async def main():
     updateHistoryTask = asyncio.create_task(updateHistoryDisplay())
     await asyncio.gather(task1, waitForWifiTask, clickWakeTask, updateHistoryTask)
 
-# Call the function to get the local IP address
+# Main function start
 if __name__ == "__main__":
     asyncio.run(main())
+
+# Example of POST request
+# {
+#     "time": 3200656,
+#     "name": "kale Lap 1",
+#     "history": {"kale lap 1": 313210, "grandt": 123, "mawk": 3322, "meegan": 123123, "funman": 123123, "chris lap 2": 1, "long man": 1000000000}
+# }

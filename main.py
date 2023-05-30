@@ -1,10 +1,8 @@
 # importing tkinter for gui
 import tkinter as tk
-import socket   
 from microdot_asyncio import Microdot, Response
 import asyncio
 import pyiface
-import time
 
 # creating window
 window = tk.Tk()
@@ -62,21 +60,23 @@ async def update_loop():
         window.update()
         await asyncio.sleep(0.25)
 
+async def waitForWifi():
+    # Get a specific interface by name
+    wlan0 = pyiface.Interface(name='wlan0')
+    while wlan0.sockaddrToStr(wlan0.addr) == 'None':
+        # view wlan0 info
+        print(wlan0.sockaddrToStr(wlan0.addr))
+        await asyncio.sleep(2)
+        
+    ipText.set(wlan0.sockaddrToStr(wlan0.addr))
+    timeText.set('Standby')
+    await app.start_server(debug=True, port=5000)
+
 async def main():
+    waitForWifiTask = asyncio.create_task(waitForWifi())
     task1 = asyncio.create_task(update_loop())
-    task2 = asyncio.create_task(app.start_server(debug=True, port=5000))
-    await asyncio.gather(task2, task1)
-    
-# Get a specific interface by name
-wlan0 = pyiface.Interface(name='wlan0')
-while wlan0.sockaddrToStr(wlan0.addr) == 'None':
-    # view wlan0 info
-    print(wlan0.sockaddrToStr(wlan0.addr))
-    time.sleep(2)
+    await asyncio.gather(task1, waitForWifiTask)
 
 # Call the function to get the local IP address
-timeText.set('Standby')
-ipText.set(wlan0.sockaddrToStr(wlan0.addr))
-
 if __name__ == "__main__":
     asyncio.run(main())

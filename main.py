@@ -54,6 +54,9 @@ async def updateHistoryDisplay():
         global updateHistoryFlag
         counter = 0
         for i in historyObject:
+            if updateHistoryFlag:
+                updateHistoryFlag = False
+                break
             if counter == 0:
                 historyTime.config(bg="purple", fg="white")
             else:
@@ -62,9 +65,6 @@ async def updateHistoryDisplay():
                 historyTimeText.set('%s: %s' % (i, formatTime(historyObject[i])))
             except ValueError:
                 print("ValueError in setHistoryTimes")
-            if updateHistoryFlag:
-                updateHistoryFlag = False
-                break
             await asyncio.sleep(3)
             counter += 1
 

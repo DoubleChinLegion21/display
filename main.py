@@ -74,8 +74,10 @@ async def waitForWifi():
     await app.start_server(debug=True, port=5000)
 
 async def clickWake():
-    pyautogui.press('space')
-    await asyncio.sleep(60)
+    while True:
+        pyautogui.press('space')
+        print("staying awake")
+        await asyncio.sleep(60)
 
 async def main():
     waitForWifiTask = asyncio.create_task(waitForWifi())

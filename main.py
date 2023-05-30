@@ -4,6 +4,7 @@ import socket
 from microdot_asyncio import Microdot, Response
 import asyncio
 import pyiface
+import time
 
 # creating window
 window = tk.Tk()
@@ -66,32 +67,16 @@ async def main():
     task2 = asyncio.create_task(app.start_server(debug=True, port=5000))
     await asyncio.gather(task2, task1)
     
-def get_local_ip():
-    try:
-        # Create a temporary socket
-        temp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # Connect the socket to a remote server (doesn't need to be reachable)
-        temp_socket.connect(("10.255.255.255", 1))
-        # Get the local IP address of the socket
-        local_ip = temp_socket.getsockname()[0]
-        # Close the temporary socket
-        temp_socket.close()
-        return local_ip
-    except socket.error:
-        return "Unable to determine IP address."
-    
 # Get a specific interface by name
 wlan0 = pyiface.Interface(name='wlan0')
-
-# view eth0 info
-print(wlan0.sockaddrToStr(wlan0.addr))
-print(wlan0.addr)
+while wlan0.sockaddrToStr(wlan0.addr) == None:
+    # view wlan0 info
+    print(wlan0.sockaddrToStr(wlan0.addr))
+    time.sleep(2)
 
 # Call the function to get the local IP address
-local_ip_address = get_local_ip()
-print("Local IP address:", local_ip_address)
 timeText.set('Standby')
-ipText.set(local_ip_address)
+ipText.set(wlan0.sockaddrToStr(wlan0.addr))
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -69,7 +69,7 @@ async def main():
     
 # Get a specific interface by name
 wlan0 = pyiface.Interface(name='wlan0')
-while wlan0.sockaddrToStr(wlan0.addr) == None:
+while wlan0.sockaddrToStr(wlan0.addr) == 'None':
     # view wlan0 info
     print(wlan0.sockaddrToStr(wlan0.addr))
     time.sleep(2)
